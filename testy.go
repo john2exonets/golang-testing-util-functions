@@ -22,37 +22,32 @@ func IsErr(t *testing.T, err error, msg string) {
 
 // Assert if the two values are equal, if not error out
 func Assert(t *testing.T, a interface{}, b interface{}) {
-	if a == b {
-		return
+	if reflect.TypeOf(a).Kind() == reflect.Slice { // Slices have no equality
+		if reflect.DeepEqual(a, b) {
+			return
+		}
+	} else {
+		if a == b {
+			return
+		}
 	}
+
 	t.Errorf("Received \"%v\" (type %v), expected \"%v\" (type %v)", a, reflect.TypeOf(a), b, reflect.TypeOf(b))
 }
 
 // AssertNot - that the two values are NOT equal
 func AssertNot(t *testing.T, a interface{}, b interface{}) {
-	if a != b {
-		return
+	if reflect.TypeOf(a).Kind() == reflect.Slice {	// Slices have no equality
+		if ! reflect.DeepEqual(a, b) {
+			return
+		}
+	} else {
+		if a != b {
+			return
+		}
 	}
 	t.Errorf("Received \"%v\" (type %v), but NOT expecting to", a, reflect.TypeOf(a))
 }
-
-// contains() - does the string contain somewhere the value?
-// func contains(t *testing.T, src string, v string) {
-// 	if strings.Contains(src, v) {
-// 		return
-// 	}
-// 	t.Errorf("String \"%s\" does not Contain \"%s\"", src, v)
-// }
-
-// // arrContains() - does the []string contain the value?
-// func arrContains(t *testing.T, src []string, v string) {
-// 	for i := range src {
-// 		if src[i] == v {
-// 			return
-// 		}
-// 	}
-// 	t.Errorf("Slice \"%v\" does not Contain \"%s\"", src, v)
-// }
 
 // Contains - does the list contain the target?
 // Based on: https://stackoverflow.com/questions/10485743/contains-method-for-a-slice
